@@ -15,9 +15,8 @@ def search_for_tracks(session, tracks):
 			search.load()
 
 		for search_track in search.tracks:
-			
+			track_found = False
 			if song == search_track.name.lower():
-				track_found = False
 				for track_artist in track.artists:
 					if artist == track_artist.lower()
 						track_found = True
