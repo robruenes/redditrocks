@@ -44,11 +44,7 @@ def search_for_tracks(session, tracks):
 
 def updating_playlist(playlist, done):
 	if done is True:
-		updated_playlist_event.set()
-
-def playlist_state_listener(playlist):
-	if playlist.is_loaded is True:
-		playlist_loaded_event.set()
+		playlist_updated_event.set()
 	
 def connection_state_listener(session):
 	if session.connection.state is spotify.ConnectionState.LOGGED_IN:
@@ -116,8 +112,8 @@ spotify_tracks = search_for_tracks(session, tracks)
 
 playlists = session.playlist_container
 playlist = playlists.add_new_playlist("RedditRocks Top Ten")
-playlist.on(spotify.PlaylistEvent.PLAYLIST_STATE_CHANGED, playlist_state_listener)
 playlist.on(spotify.PlaylistEvent.TRACKS_ADDED, tracks_added)
+playlist.on(spotify.PlaylistEvent.PLAYLIST_UPDATE_IN_PROGRESS, updating_playlist)
 playlist.add_tracks(spotify_tracks)
 playlist.load()
 
