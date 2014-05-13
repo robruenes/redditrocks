@@ -45,10 +45,12 @@ class RedditPlaylistCreator(object):
         self._subreddit = 'music'
 
     def _tracks_added(self, playlist, tracks, index):
+
         print('Tracks added to playlist.')
         self._tracks_added_event.set()
 
     def _updating_playlist(self, playlist, done):
+
         if done is True:
             self._playlist_updated_event.set()
 
@@ -62,15 +64,19 @@ class RedditPlaylistCreator(object):
         scraped_tracks = 0
 
         for i in range(0, num_submissions):
+            
             submission = next(submissions).title
             (artist, track) = self._artist_and_track(submission)
+            
             if artist is not None:
-                scraped_tracks += 1
+            
+                scraped_track_count += 1
                 self._tracks_from_reddit.append((artist, track))
-            if scraped_tracks == self._song_count:
-                break
+            
+            if scraped_track_count == self._song_count: break
 
     def _artist_and_track(self, submission):
+        
         try:
             [artist, partial_title] = self._artist_delimiter.split(submission)
             [track, garbage] = self._track_delimiter.split(partial_title)
@@ -116,10 +122,13 @@ class RedditPlaylistCreator(object):
         print "Playlist built!"
 
     def create_playlist(self):
+        
         self._scrape_submission_titles()
         self._search_for_tracks()
+       
         if self._spotify_tracks:
             self._build_playlist("RedditRocks")
+       
         else:
             print "No songs found on Spotify. Will not build playlist."
 
@@ -129,25 +138,30 @@ class RedditPlaylistCreator(object):
 class RedditRocks(object):
 
     def __init__(self):
+       
         self._logged_in_event = threading.Event()
         self._session = spotify.Session()
         self._session.on(spotify.SessionEvent.CONNECTION_STATE_UPDATED, self._connection_state_listener)
         self._song_count = 10
 
     def _connection_state_listener(self, session):
+       
         if session.connection.state is spotify.ConnectionState.LOGGED_IN:
             self._logged_in_event.set()
 
     def _login(self, username='', password=''):
+       
         self._session.login(username, password)
         while not self._logged_in_event.wait(0.1):
             self._session.process_events()
 
     def _create_playlist(self):
+       
         creator = RedditPlaylistCreator(self._session, self._song_count)
         creator.create_playlist()
 
     def run(self):
+        
         username = raw_input('Spotify Username: ')
         password = getpass.getpass('Spotify Password: ')
 
