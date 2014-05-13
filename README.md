@@ -28,3 +28,8 @@ pyspotify can be installed using Pip:
 `pip install --pre pyspotify`
 
 A Spotify App Key can be downloaded by anyone with a Spotify Premium Subscription [here](https://devaccount.spotify.com/my-account/keys/).
+
+Testing
+=======
+
+redditrocks was tested on Mac OS X Mavericks 10.9.2 using Python 2.7.6
