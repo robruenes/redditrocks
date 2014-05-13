@@ -21,12 +21,10 @@ On top of this, you'll need:
 
 libspotify can be installed using Homebrew:
 
-'brew install libspotify'
+`brew install libspotify`
 
 pyspotify can be installed using Pip:
 
-'pip install --pre pyspotify'
+`pip install --pre pyspotify`
 
-A Spotify App Key can be downloaded by anyone with a Spotify Premium Subscription at:
-
-'https://devaccount.spotify.com/my-account/keys/'
+A Spotify App Key can be downloaded by anyone with a Spotify Premium Subscription [here](https://devaccount.spotify.com/my-account/keys/).
