@@ -5,27 +5,51 @@ import re
 import praw
 import spotify
 import threading
+import datetime
+
+def tracks_added(playlist, tracks, index):
+	print('Tracks added to playlist')
+	tracks_added_event.set()
 
 def search_for_tracks(session, tracks):
+
+	playlist_tracks = []
+	
 	for (artist, song) in tracks:
 		
 		search = spotify.Search(session, song)
 		
-		while not search.is_loaded
+		while not search.is_loaded:
 			search.load()
 
 		for search_track in search.tracks:
 			track_found = False
+
+			# This is not robust at all. Any difference in punctuation,
+			# extra info, etc. means the song doesn't get added to the 
+			# playlist. This check should be replaced with a function call
+			# that removes punctuation and then checks if its a substring
 			if song == search_track.name.lower():
-				for track_artist in track.artists:
-					if artist == track_artist.lower()
+			
+				for track_artist in search_track.artists:
+					if artist == track_artist.name.lower():
 						track_found = True
+						break
 			
 			if track_found == True:
-				#add to playlist
+				playlist_tracks.append(search_track)
 				break
 
+	return playlist_tracks
 
+def updating_playlist(playlist, done):
+	if done is True:
+		updated_playlist_event.set()
+
+def playlist_state_listener(playlist):
+	if playlist.is_loaded is True:
+		playlist_loaded_event.set()
+	
 def connection_state_listener(session):
 	if session.connection.state is spotify.ConnectionState.LOGGED_IN:
 		logged_in_event.set()
@@ -74,13 +98,36 @@ tracks = scrape_submission_titles('music', 10)
 username = 'your username here'
 password = 'your password here'
 
-#Login to Spotify.
+#Threads
 logged_in_event = threading.Event()
+playlist_updated_event = threading.Event()
+playlist_loaded_event = threading.Event()
+tracks_added_event = threading.Event()
+
+#Login to Spotify
 session = spotify.Session()
 session.on(spotify.SessionEvent.CONNECTION_STATE_UPDATED, connection_state_listener)
 session.login(username, password)
+
 while not logged_in_event.wait(0.1):
 		session.process_events()
 
-search_for_tracks(session, tracks)
+spotify_tracks = search_for_tracks(session, tracks)
+
+playlists = session.playlist_container
+playlist = playlists.add_new_playlist("RedditRocks Top Ten")
+playlist.on(spotify.PlaylistEvent.PLAYLIST_STATE_CHANGED, playlist_state_listener)
+playlist.on(spotify.PlaylistEvent.TRACKS_ADDED, tracks_added)
+playlist.add_tracks(spotify_tracks)
+playlist.load()
+
+while not tracks_added_event.wait(0.1):
+	session.process_events()
+
+while not playlist_updated_event.wait(0.1):
+	session.process_events()
+
+print "Done."
+session.logout()
+
 
