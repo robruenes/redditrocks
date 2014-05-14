@@ -43,6 +43,7 @@ class RedditPlaylistCreator(object):
         self._track_delimiter = re.compile(' \[')
         self._tracks_from_reddit = []
         self._subreddit = 'music'
+        self._num_subs = self._song_count + 15
 
     def _tracks_added(self, playlist, tracks, index):
 
@@ -54,27 +55,23 @@ class RedditPlaylistCreator(object):
         if done is True:
             self._playlist_updated_event.set()
 
-
     def _scrape_submission_titles(self):
 
         # Temporary workaround. Not all submissions will be songs. We pull extra submissions and
         # stop storing tracks when we've found self._song_count tracks.
-        num_submissions = self._song_count * 5
-        submissions = self._reddit.get_subreddit(self._subreddit).get_top(limit=num_submissions)
+        # num_submissions = self._song_count * 5
+        submissions = self._reddit.get_subreddit(self._subreddit).get_top(limit=self._num_subs)
         scraped_track_count = 0
 
-        for i in range(0, num_submissions):
+        for i in range(1, self._num_subs):
             
             submission = next(submissions).title
             (artist, track) = self._artist_and_track(submission)
             
             if artist is not None:
             
-                scraped_track_count += 1
                 self._tracks_from_reddit.append((artist, track))
             
-            if scraped_track_count == self._song_count: break
-
     def _artist_and_track(self, submission):
         
         try:
@@ -87,8 +84,11 @@ class RedditPlaylistCreator(object):
 
     def _search_for_tracks(self):
 
+        tracks_discovered = 0
+
         for (artist, track) in self._tracks_from_reddit:
             
+            print "Searching for %s - %s." % (artist, track)
             query = 'artist:"%s" title:"%s"' % (artist, track)
             search = spotify.Search(self._session, query)
             
@@ -96,12 +96,15 @@ class RedditPlaylistCreator(object):
                 search.load()
 
             if search.track_total < 1:
-                print 'Could not find %s - %s' % (artist, track)
+                print 'Could not find %s - %s.' % (artist, track)
                 continue 
 
-            print '%s - %s was found.' % (artist, track)
+            print '%s - %s was found.' % (artist, track)    
             spotify_track = search.tracks[0]
             self._spotify_tracks.append(spotify_track)
+            tracks_discovered += 1
+
+            if tracks_discovered == self._song_count: break
 
     def _build_playlist(self, name):
         
@@ -174,7 +177,6 @@ class RedditRocks(object):
 
         print "Logging out..."
         self._session.logout()
-
 
 def main():
     redditrocks = RedditRocks()
