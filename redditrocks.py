@@ -19,6 +19,7 @@ import praw
 import spotify
 import threading
 import getpass
+import datetime
 
 """The RedditPlaylistCreator class is responsible for the bulk of the work, 
    as it scrapes /r/music for the top submissions and then searches Spotify
@@ -130,7 +131,9 @@ class RedditPlaylistCreator(object):
         self._search_for_tracks()
        
         if self._spotify_tracks:
-            self._build_playlist("RedditRocks")
+
+            date_string = datetime.datetime.now().strftime('%I:%M%p on %B %d, %Y')
+            self._build_playlist("RedditRocks at " + date_string)
        
         else:
             print "No songs found on Spotify. Will not build playlist."
