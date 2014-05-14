@@ -58,11 +58,7 @@ class RedditPlaylistCreator(object):
 
     def _scrape_submission_titles(self):
 
-        # Temporary workaround. Not all submissions will be songs. We pull extra submissions and
-        # stop storing tracks when we've found self._song_count tracks.
-        # num_submissions = self._song_count * 5
         submissions = self._reddit.get_subreddit(self._subreddit).get_top(limit=self._num_subs)
-        scraped_track_count = 0
 
         for i in range(1, self._num_subs):
             
