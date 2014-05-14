@@ -44,7 +44,7 @@ class RedditPlaylistCreator(object):
         self._track_delimiter = re.compile(' \[')
         self._tracks_from_reddit = []
         self._subreddit = 'music'
-        self._num_subs = self._song_count + 15
+        self._num_subs = self._song_count * 2
 
     def _tracks_added(self, playlist, tracks, index):
 
@@ -144,7 +144,7 @@ class RedditRocks(object):
         self._logged_in_event = threading.Event()
         self._session = spotify.Session()
         self._session.on(spotify.SessionEvent.CONNECTION_STATE_UPDATED, self._connection_state_listener)
-        self._song_count = 10
+        self._song_count = None
 
     def _connection_state_listener(self, session):
        
@@ -167,15 +167,21 @@ class RedditRocks(object):
         username = raw_input('Spotify Username: ')
         password = getpass.getpass('Spotify Password: ')
 
-        print "Logging in..."
-        self._login(username, password)
-        print "Logged in!"
+        try:
+            self._song_count = int(raw_input('Number of tracks for playlist: '))
 
-        print "Building playlist..."
-        self._create_playlist()
+            print "Logging in..."
+            self._login(username, password)
+            print "Logged in!"
 
-        print "Logging out..."
-        self._session.logout()
+            print "Building playlist..."
+            self._create_playlist()
+
+            print "Logging out..."
+            self._session.logout()
+
+        except ValueError:
+            print 'Input was not a number. Quitting...'
 
 def main():
     redditrocks = RedditRocks()
