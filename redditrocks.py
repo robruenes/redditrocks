@@ -61,7 +61,7 @@ class RedditPlaylistCreator(object):
         # stop storing tracks when we've found self._song_count tracks.
         num_submissions = self._song_count * 5
         submissions = self._reddit.get_subreddit(self._subreddit).get_top(limit=num_submissions)
-        scraped_tracks = 0
+        scraped_track_count = 0
 
         for i in range(0, num_submissions):
             
