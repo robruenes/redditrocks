@@ -18,16 +18,13 @@ class SpotifyPlaylistGenerator(object):
     self._playlist_updated_event = threading.Event()
 
   def _tracks_added(self, playlist, tracks, index):
-
     self._tracks_added_event.set()
 
   def _updating_playlist(self, playlist, done):
-
     if done is True:
       self._playlist_updated_event.set()
 
   def _generate_playlist(self, playlist_name):
-
     playlist = self._session.playlist_container.add_new_playlist(playlist_name)
     playlist.on(spotify.PlaylistEvent.TRACKS_ADDED, self._tracks_added)
     playlist.on(spotify.PlaylistEvent.PLAYLIST_UPDATE_IN_PROGRESS, self._updating_playlist)
@@ -45,7 +42,6 @@ class SpotifyPlaylistGenerator(object):
     print "Playlist built!"
 
   def _perform_search(self, queries):
-
     result = None
 
     for query in queries
@@ -65,7 +61,6 @@ class SpotifyPlaylistGenerator(object):
 
 
   def _search_for_tracks(self, desired_tracks):
-
     for artist, track in desired_tracks:
 
       print 'Searching for %s - %s.' % (artist, track)
@@ -85,7 +80,6 @@ class SpotifyPlaylistGenerator(object):
       self._spotify_tracks.append(spotify_track)
 
   def user_login(self):
-
     print 'Please enter your Spotify credentials.'
     username = raw_input('Username: ')
     password = getpass.getpass('Password: ')
@@ -99,11 +93,9 @@ class SpotifyPlaylistGenerator(object):
     print 'Logged in!'
 
   def user_logout(self):
-
     print "Logging out!"
     self._session.logout()
 
   def generate_playlist(self, playlist_name, desired_tracks):
-
     self._search_for_tracks(desired_tracks)
     self._generate_playlist(playlist_name)

@@ -23,7 +23,6 @@ import playlistgenerator
 class RedditRocks(object):
 
   def __init__(self):
-
     self._song_count = None
     self._subreddits = ['music', 'posthardcore']
     self._tracks = []
@@ -32,7 +31,6 @@ class RedditRocks(object):
     self._playlist_generator = playlistgenerator.SpotifyPlaylistGenerator()
 
   def _get_music_songs(self):
-
     """Post format: Artist - Title [Genre] Extra Text"""
     pattern = '([^-]*)-+([^-]*)\['
 
@@ -46,12 +44,10 @@ class RedditRocks(object):
         self._tracks.append((search.group(1).strip(), search.group(2).strip()))
 
   def _get_songs(self, subreddit):
-
     if subreddit == 'music':
       return self._get_music_songs()
 
   def _prompt_for_subreddits(self):
-
     print 'Which subreddits would you like music from?'
 
     for subreddit in self._subreddits:
@@ -69,7 +65,6 @@ class RedditRocks(object):
 
 
   def _generate_playlists(self):
-
     for subreddit in self._requested_subreddits:
 
       self._tracks = []
@@ -80,18 +75,13 @@ class RedditRocks(object):
 
       self._playlist_generator.generate_playlist(playlist_name, self._tracks)
 
-  def _clean_up(self):
-
-    self._playlist_generator.user_logout()
-
   def run(self):
-
     print 'Thanks for using RedditRocks!'
-    
+
     self._playlist_generator.user_login()
     self._prompt_for_subreddits()
     self._generate_playlists()
-    self._clean_up()
+    self._playlist_generator.user_logout()
 
 def main():
   redditrocks = RedditRocks()
