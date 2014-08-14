@@ -55,8 +55,10 @@ class RedditRocks(object):
   def _prompt_for_subreddits(self):
     print 'Which subreddits would you like music from?\n'
 
-    for subreddit in self._subreddits:
-      print subreddit + '\n'
+    for i in range(0, len(self._subreddits)):
+      print '%d) %s' % (i + 1, self._subreddits[i])
+
+    print '\n'
 
     request_string = raw_input('Please enter their names separated by commas: ')
 

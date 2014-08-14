@@ -36,7 +36,7 @@ class SpotifyPlaylistGenerator(object):
     playlist.on(spotify.PlaylistEvent.TRACKS_ADDED, self._tracks_added)
     playlist.on(spotify.PlaylistEvent.PLAYLIST_UPDATE_IN_PROGRESS, self._updating_playlist)
 
-    print 'Building playlist %s with discovered tracks' % (playlist_name)
+    print 'Building playlist %s with discovered tracks...' % playlist_name
     playlist.add_tracks(self._spotify_tracks)
     playlist.load()
 
@@ -46,7 +46,7 @@ class SpotifyPlaylistGenerator(object):
     while not self._playlist_updated_event.wait(0.1):
       self._session.process_events()
 
-    print "Playlist built!"
+    print "Playlist built!\n"
 
   def _perform_search(self, queries):
     result = None
@@ -72,8 +72,6 @@ class SpotifyPlaylistGenerator(object):
     self._spotify_tracks = []
     for artist, track in desired_tracks:
 
-      print 'Searching for %s - %s.' % (artist, track)
-
       """In case artist and track are reversed, we try both queries"""
       first_query = 'artist:"%s" track:"%s"' % (artist, track)
       second_query = 'artist:"%s" track:"%s"' % (track, artist)
@@ -84,7 +82,7 @@ class SpotifyPlaylistGenerator(object):
       if search is None:
         continue
 
-      print '%s - %s was found.' % (artist, track)
+      print '%s - %s added to playlist.' % (artist, track)
       spotify_track = search.tracks[0]
       self._spotify_tracks.append(spotify_track)
 
@@ -106,5 +104,6 @@ class SpotifyPlaylistGenerator(object):
     self._session.logout()
 
   def generate_playlist(self, playlist_name, desired_tracks):
+    print 'Searching Spotify to build %s' % playlist_name
     self._search_for_tracks(desired_tracks)
     self._generate_playlist(playlist_name)
