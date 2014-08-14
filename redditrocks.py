@@ -30,11 +30,8 @@ class RedditRocks(object):
     self._reddit = praw.Reddit(user_agent="RedditRocks")
     self._playlist_generator = playlistgenerator.SpotifyPlaylistGenerator()
 
-  def _get_music_songs(self):
-    """Post format: Artist - Title [Genre] Extra Text"""
-    pattern = '([^-]*)-+([^-]*)\['
-
-    submissions = self._reddit.get_subreddit('music').get_top(limit=None)
+  def _scrape_songs(self, subreddit, pattern):
+    submissions = self._reddit.get_subreddit(subreddit).get_top(limit=None)
 
     for submission in submissions:
 
@@ -45,7 +42,15 @@ class RedditRocks(object):
 
   def _get_songs(self, subreddit):
     if subreddit == 'music':
-      return self._get_music_songs()
+      """Post format: Artist - Title [Genre] Extra Text"""
+      pattern = '([^-]*)-+([^-]*)\['
+
+    elif subreddit == 'posthardcore':
+      """Post format: Artist - Title Extra Text"""
+      """No delimiter between Title and Extra Text makes it harder to parse"""
+      pattern = '([^-]*)-+([^-([]*)'
+
+    self._scrape_songs(subreddit, pattern)
 
   def _prompt_for_subreddits(self):
     print 'Which subreddits would you like music from?'

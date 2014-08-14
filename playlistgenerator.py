@@ -44,7 +44,7 @@ class SpotifyPlaylistGenerator(object):
   def _perform_search(self, queries):
     result = None
 
-    for query in queries
+    for query in queries:
 
       search = spotify.Search(self._session, query)
 
