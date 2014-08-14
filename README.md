@@ -1,12 +1,12 @@
 redditrocks
 ===========
 
-redditrocks creates a Spotify playlist based off of /r/music's current top tracks.
+redditrocks creates playlists based off the most upvoted tracks from music subreddits.
 
 Author
 ======
 
-redditrocks was created by Rob Ruenes on 5/13/2014
+redditrocks was created by Rob Ruenes on 5/13/2014 and updated on 8/14/2014.
 
 Requirements
 ============
