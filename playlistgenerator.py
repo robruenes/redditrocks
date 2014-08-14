@@ -25,6 +25,13 @@ class SpotifyPlaylistGenerator(object):
       self._playlist_updated_event.set()
 
   def _generate_playlist(self, playlist_name):
+
+    """Reset the events for each subsequent call to this function, so we don't
+       accidentally quit before a playlist is fully updated"""
+
+    self._tracks_added_event.clear()
+    self._playlist_updated_event.clear()
+
     playlist = self._session.playlist_container.add_new_playlist(playlist_name)
     playlist.on(spotify.PlaylistEvent.TRACKS_ADDED, self._tracks_added)
     playlist.on(spotify.PlaylistEvent.PLAYLIST_UPDATE_IN_PROGRESS, self._updating_playlist)
@@ -61,6 +68,8 @@ class SpotifyPlaylistGenerator(object):
 
 
   def _search_for_tracks(self, desired_tracks):
+
+    self._spotify_tracks = []
     for artist, track in desired_tracks:
 
       print 'Searching for %s - %s.' % (artist, track)
@@ -80,7 +89,7 @@ class SpotifyPlaylistGenerator(object):
       self._spotify_tracks.append(spotify_track)
 
   def user_login(self):
-    print 'Please enter your Spotify credentials.'
+    print 'Please enter your Spotify credentials.\n'
     username = raw_input('Username: ')
     password = getpass.getpass('Password: ')
 

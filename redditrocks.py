@@ -24,7 +24,7 @@ class RedditRocks(object):
 
   def __init__(self):
     self._song_count = None
-    self._subreddits = ['music', 'posthardcore']
+    self._subreddits = ['music', 'posthardcore', 'listentothis', 'dubstep']
     self._tracks = []
     self._requested_subreddits = []
     self._reddit = praw.Reddit(user_agent="RedditRocks")
@@ -41,11 +41,11 @@ class RedditRocks(object):
         self._tracks.append((search.group(1).strip(), search.group(2).strip()))
 
   def _get_songs(self, subreddit):
-    if subreddit == 'music':
+    if subreddit == 'music' or subreddit == 'listentothis':
       """Post format: Artist - Title [Genre] Extra Text"""
       pattern = '([^-]*)-+([^-]*)\['
 
-    elif subreddit == 'posthardcore':
+    elif subreddit == 'posthardcore' or subreddit == 'dubstep':
       """Post format: Artist - Title Extra Text"""
       """No delimiter between Title and Extra Text makes it harder to parse"""
       pattern = '([^-]*)-+([^-([]*)'
@@ -53,10 +53,10 @@ class RedditRocks(object):
     self._scrape_songs(subreddit, pattern)
 
   def _prompt_for_subreddits(self):
-    print 'Which subreddits would you like music from?'
+    print 'Which subreddits would you like music from?\n'
 
     for subreddit in self._subreddits:
-      print subreddit
+      print subreddit + '\n'
 
     request_string = raw_input('Please enter their names separated by commas: ')
 
