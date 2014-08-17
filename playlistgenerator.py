@@ -86,16 +86,34 @@ class SpotifyPlaylistGenerator(object):
       spotify_track = search.tracks[0]
       self._spotify_tracks.append(spotify_track)
 
-  def user_login(self):
-    print 'Please enter your Spotify credentials.\n'
+  def _collect_credentials_and_login(self):
     username = raw_input('Username: ')
     password = getpass.getpass('Password: ')
 
     print 'Logging in %s...' % (username)
 
     self._session.login(username, password)
+
+  def user_login(self):
+    print 'Please enter your Spotify credentials.\n'
+
+    self._collect_credentials_and_login()
+
+    try_again_count = 0
+
     while self._session.connection.state is not spotify.ConnectionState.LOGGED_IN:
+
       self._session.process_events()
+
+      """Worth investigating a different way to do this."""
+      if (try_again_count > 100000):
+        print 'It seems like something is wrong with your credentials.'
+        print 'Please renter them.\n'
+        self._collect_credentials_and_login()
+        try_again_count = 0
+
+      else:
+        try_again_count += 1
 
     print 'Logged in!'
 
