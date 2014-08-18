@@ -108,7 +108,7 @@ class SpotifyPlaylistGenerator(object):
       """Worth investigating a different way to do this."""
       if (try_again_count > 100000):
         print 'It seems like something is wrong with your credentials.'
-        print 'Please renter them.\n'
+        print 'Please reenter them.\n'
         self._collect_credentials_and_login()
         try_again_count = 0
 
